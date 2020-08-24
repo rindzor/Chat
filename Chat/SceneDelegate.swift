@@ -7,6 +7,10 @@
 //
 
 import UIKit
+import Firebase
+import IQKeyboardManagerSwift
+
+
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -14,11 +18,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        
+        //Выбираем какой Viewcontroller отображать при запуске приложения
+        configureInitialViewController()
+
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
     }
+    
+    func configureInitialViewController(){
+
+        var initialVC: UIViewController
+        let storyboard = UIStoryboard(name: "Welcome", bundle: nil)
+        
+        if Auth.auth().currentUser != nil{
+             initialVC = storyboard.instantiateViewController(withIdentifier: IDENTIFIER_TABBAR)
+        }
+        else{
+             initialVC = storyboard.instantiateViewController(withIdentifier: IDENTIFIER_WELCOME)
+        }
+        
+        self.window?.rootViewController = initialVC
+        self.window?.makeKeyAndVisible()
+        
+    }
+    
+    
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
@@ -30,11 +57,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        Api.User.isOnline(bool: true)
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
+        Api.User.isOnline(bool: false)
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -46,6 +75,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        Api.User.isOnline(bool: false)
     }
 
 
