@@ -1,4 +1,4 @@
-# Project Title
+# Chat
 
 iOS application that uses Firebase Database and Firebase Storage
 
